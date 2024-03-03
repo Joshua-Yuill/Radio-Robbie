@@ -5,11 +5,11 @@ import re
 import struct
 import urllib.request as urllib2
 import csv
+import requests as r
 
 intents=discord.Intents.all()
 
 bot = commands.Bot(command_prefix='?', intents=intents)
-
 
 radioSource = "http://media-ice.musicradio.com/CapitalMP3"
 
@@ -29,6 +29,29 @@ with open('stationList.csv') as csv_file:
             stationLocation.append(row[3])
             stationUrl.append(row[2])
             line_count += 1
+
+tokens = open('tokens.txt').readlines() 
+
+#Spotify Acess Token Getter
+try:
+    client_id = tokens[1]
+    client_secret = tokens[2]
+
+    auth_url = 'https://accounts.spotify.com/api/token'
+
+    data = {
+        'grant_type': 'client_credentials',
+        'client_id': client_id,
+        'client_secret': client_secret,
+    }
+
+    auth_response = r.post(auth_url, data=data)
+
+    access_token = auth_response.json().get('access_token')
+    print("Spotify Token Aquired: " + access_token)
+except:
+    print("Unable to get Spotify access token")
+# - - - - - 
 
 @bot.event
 async def on_ready():
@@ -72,29 +95,36 @@ async def station(ctx, num:int = 0):
 
 @bot.command(pass_context=True)
 async def song(ctx):
-    global radioSource
-    url = radioSource  # radio stream
-    encoding = 'latin1' # default: iso-8859-1 for mp3 and utf-8 for ogg streams
-    request = urllib2.Request(url, headers={'Icy-MetaData': 1})  # request metadata
-    response = urllib2.urlopen(request)
-    metaint = int(response.headers['icy-metaint'])
-    for _ in range(10): # # title may be empty initially, try several times
-        response.read(metaint)  # skip to metadata
-        metadata_length = struct.unpack('B', response.read(1))[0] * 16  # length byte
-        metadata = response.read(metadata_length).rstrip(b'\0')
-        # extract title from the metadata
-        m = re.search(br"StreamTitle='([^']*)';", metadata)
-        if m:
-            title = m.group(1)
-            if title:
-                break
     try:
+        global radioSource
+        url = radioSource  # radio stream
+        encoding = 'latin1' # default: iso-8859-1 for mp3 and utf-8 for ogg streams
+        request = urllib2.Request(url, headers={'Icy-MetaData': 1})  # request metadata
+        response = urllib2.urlopen(request)
+        metaint = int(response.headers['icy-metaint'])
+        for _ in range(10): # # title may be empty initially, try several times
+            response.read(metaint)  # skip to metadata
+            metadata_length = struct.unpack('B', response.read(1))[0] * 16  # length byte
+            metadata = response.read(metadata_length).rstrip(b'\0')
+            # extract title from the metadata
+            m = re.search(br"StreamTitle='([^']*)';", metadata)
+            if m:
+                title = m.group(1)
+                if title:
+                    break
+        
         songtitle = str(title.decode(encoding, errors='replace'))
 
         if songtitle == '':
             await ctx.send("There is no song title (This could be because of an ad break or spoken segment)")
         else:
-            await ctx.send("Current song: **" + songtitle + "**")
+            url = songtitle.replace(" -", "")
+            url = url.replace(" ", "+")
+            rURL = (f"https://api.spotify.com/v1/search?q={url}&type=track")
+            response = r.get(f"https://api.spotify.com/v1/search?q={url}&type=track&offset=0&limit=1", headers = {
+        'Authorization': 'Bearer {}'.format(access_token)
+    })
+            await ctx.send("Current song: **" + songtitle + "**\n**Spotify link**: " + response.json()['tracks']['items'][0]['external_urls']['spotify'])
     except:
         await ctx.send("Unable to get song info for this station")
 
@@ -102,7 +132,7 @@ async def song(ctx):
 @bot.command(pass_context=True)
 async def wst(ctx):
     global radioSource
-    await ctx.send("Current radio: " + radioSource)
+    await ctx.send("Current radio: **" + stationName[stationUrl.index(radioSource)] + "**")
 
 @bot.command()
 async def stop(ctx):
@@ -115,6 +145,4 @@ async def leave(ctx):
     await ctx.voice_client.disconnect()
     print(radioSource)
 
-
-token = open('token.txt', 'r')
-bot.run(token.readline())
+bot.run(tokens[0])
