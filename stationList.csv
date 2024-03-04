@@ -2,11 +2,12 @@ Station Name,Freq,Url,Location
 Capital London,95.8 FM,http://media-ice.musicradio.com/CapitalMP3,London
 Heart London,106.2 FM,http://ice-sov.musicradio.com/HeartLondonMP3,London
 Kiss FM,100.0 FM,http://live-kiss.sharp-stream.com/kiss100.mp3,London
-Magic Radio,105.4 FM,http://icy-e-bz-03-gos.sharp-stream.com/magic1054.mp3,National
 LBC,97.3 FM,http://icecast.thisisdax.com/LBCLondonMP3,London
+Magic Radio,105.4 FM,http://icy-e-bz-03-gos.sharp-stream.com/magic1054.mp3,National
 KMFM Canterbury,96.2 FM,http://listen-kmfm.sharp-stream.com/kmfmcanterbury.mp3?ref=RB,Canterbury
 BBC Radio 1,104.8 FM,http://as-hls-ww-live.akamaized.net/pool_904/live/ww/bbc_radio_one/bbc_radio_one.isml/bbc_radio_one-audio%3d96000.norewind.m3u8,National
 BBC Radio 1 Dance,Online Only,http://as-hls-ww-live.akamaized.net/pool_904/live/ww/bbc_radio_one_dance/bbc_radio_one_dance.isml/bbc_radio_one_dance-audio%3d96000.norewind.m3u8,National
 BBC Radio 1 Relax,Online Only,http://as-hls-ww-live.akamaized.net/pool_904/live/ww/bbc_radio_one_relax/bbc_radio_one_relax.isml/bbc_radio_one_relax-audio%3d96000.norewind.m3u8,National
 BBC Radio 1Xtra,Online Only,http://as-hls-ww-live.akamaized.net/pool_904/live/ww/bbc_1xtra/bbc_1xtra.isml/bbc_1xtra-audio%3d96000.norewind.m3u8,National
+Fix Radio,Online and DAB,https://n10a-eu.rcs.revma.com/pq7npt2nzbuvv?rj-ttl=5&rj-tok=AAABjgbSJNkACmLLjEExqldKMg,National
 Lofi Radio,Online Only,https://play.streamafrica.net/lofiradio,Worldwide

@@ -30,12 +30,13 @@ with open('stationList.csv') as csv_file:
             stationUrl.append(row[2])
             line_count += 1
 
+
 tokens = open('tokens.txt').readlines() 
 
-#Spotify Acess Token Getter
+#Spotify Access Token Getter
 try:
-    client_id = tokens[1]
-    client_secret = tokens[2]
+    client_id = "6159b0c7d8bc4c159a13b2d56461243b"
+    client_secret = "0fc0dee3c45249f0ad6694c865caf703"
 
     auth_url = 'https://accounts.spotify.com/api/token'
 
@@ -48,9 +49,10 @@ try:
     auth_response = r.post(auth_url, data=data)
 
     access_token = auth_response.json().get('access_token')
-    print("Spotify Token Aquired: " + access_token)
+    print("Spotify Token Acquired: " + access_token)
 except:
-    print("Unable to get Spotify access token")
+    print("Unable to get Spotify token")
+
 # - - - - - 
 
 @bot.event
@@ -59,6 +61,8 @@ async def on_ready():
 
     print(f'Logged in as {bot.user} (ID: {bot.user.id})')
     print('------')
+
+    await bot.tree.sync()
 
 @bot.command()
 async def join(ctx):
